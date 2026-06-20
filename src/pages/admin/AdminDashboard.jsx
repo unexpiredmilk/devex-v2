@@ -137,34 +137,47 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* SYSTEM OVERRIDE SECTION */}
+      {/* --- ИНЖЕНЕРНАЯ ТЕЛЕМЕТРИЯ (ВМЕСТО ЧИТОВ) --- */}
       <div style={{ background: 'var(--admin-bg-panel)', border: '1px dashed #ff3333', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', marginTop: '16px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#ff3333', marginBottom: '16px' }}>SYSTEM OVERRIDE (Читы)</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#ff3333', margin: 0 }}>ИНЖЕНЕРНАЯ ТЕЛЕМЕТРИЯ // Эмуляция стейта</h2>
+          <span style={{ fontSize: '12px', fontFamily: 'monospace', background: 'rgba(255,51,51,0.1)', color: '#ff3333', padding: '4px 8px', borderRadius: '4px' }}>DEBUG MODE</span>
+        </div>
+        
+        <p style={{ color: 'var(--admin-text-muted)', fontSize: '13px', margin: '0 0 20px 0', lineHeight: '1.5' }}>
+          * Панель предназначена для быстрой демонстрации работы Zustand-хранилища аттестационной комиссии без необходимости физического прохождения всех учебных векторов.
+        </p>
+
         <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, color: 'var(--admin-text-muted)', fontSize: '14px', lineHeight: '1.6' }}>
-            <p><strong>Оператор:</strong> {operator?.name || 'Нет данных'}</p>
-            <p><strong>Уровень:</strong> {operator?.level}</p>
-            <p><strong>Опыт:</strong> {operator?.exp} / 100</p>
-            <p><strong>Токены:</strong> {operator?.tokens}</p>
-            <p><strong>Энергия:</strong> {operator?.energy}</p>
+          <div style={{ flex: 1, color: 'var(--admin-text-muted)', fontSize: '14px', lineHeight: '1.6', background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '8px', border: '1px solid var(--admin-border)' }}>
+            <div style={{ color: 'var(--admin-text-main)', fontWeight: 'bold', marginBottom: '8px' }}>Текущий слепок памяти:</div>
+            <div><strong>Позывной:</strong> {operator?.name || 'Аноним'}</div>
+            <div><strong>Уровень доступа:</strong> {operator?.level}</div>
+            <div><strong>Опыт до сингулярности:</strong> {operator?.exp} / 100</div>
+            <div><strong>Токены (Кредиты):</strong> {operator?.tokens}</div>
+            <div><strong>Заряд АКБ:</strong> {operator?.energy} / 3</div>
           </div>
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', justifyContent: 'center' }}>
             <button 
               onClick={() => injectResources(500, 1000)}
-              style={{ background: 'rgba(234, 88, 12, 0.1)', border: '1px solid var(--accent-energy)', color: 'var(--accent-energy)', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+              style={{ background: 'rgba(234, 88, 12, 0.1)', border: '1px solid var(--accent-energy)', color: 'var(--accent-energy)', padding: '14px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontFamily: 'var(--font-tech)', transition: 'all 0.2s' }}
             >
-              ВЗЛОМ: +1000 Токенов и +500 XP
+              [ЭМУЛЯЦИЯ] ПАКЕТ: +1000 CR / +500 XP
             </button>
             <button 
               onClick={() => resetProgress()}
-              style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+              style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '14px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontFamily: 'var(--font-tech)', transition: 'all 0.2s' }}
             >
-              СБРОС ДАННЫХ
+              [ОЧИСТКА] СБРОС СТЕЙТА ОПЕРАТОРА
             </button>
           </div>
         </div>
       </div>
 
+    </div>
+  );
+}
     </div>
   );
 }
