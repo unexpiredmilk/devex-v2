@@ -2,7 +2,7 @@ import { useUIStore } from '../store/uiStore';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, CaretLeft, CaretRight, TrophyIcon, BugIcon, FileHtml, FileCss, FileJs, Plus, TerminalWindowIcon, ShieldCheck, Sun, Moon, Cpu } from '@phosphor-icons/react';
+import { Play, CaretLeft, CaretRight, TrophyIcon, BugIcon, FileHtml, FileCss, FileJs, Plus, TerminalWindowIcon, ShieldCheck } from '@phosphor-icons/react';
 import { validateCode } from '../utils/validator';
 import { useCourseStore } from '../store/courseStore';
 
@@ -21,7 +21,6 @@ export default function Workspace() {
   const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(true);
   const [logs, setLogs] = useState(['> [DEVEX_SYS] Инициализация окружения...']);
   
-  // --- Интеграция Очереди Ачивок ---
   const [toast, setToast] = useState(null); 
   const [toastQueue, setToastQueue] = useState([]);
   const [showBoundary, setShowBoundary] = useState(false); 
@@ -46,13 +45,34 @@ export default function Workspace() {
     setFailCount(0);
   }, [currentLessonIdx, selectedChapter]);
 
+  // --- 1. РЕГИСТРАЦИЯ ТРЕХ ПАЛИТР ДЛЯ MONACO ---
   const handleEditorWillMount = (monaco) => {
     monaco.editor.defineTheme('devex-dark', { base: 'vs-dark', inherit: true, rules: [], colors: { 'editor.background': '#1a1a1a' }});
     monaco.editor.defineTheme('devex-light', { base: 'vs', inherit: true, rules: [], colors: { 'editor.background': '#F5F5F5' }});
+    // Грозовая тема для Монако
+    monaco.editor.defineTheme('devex-rain', { 
+      base: 'vs-dark', 
+      inherit: true, 
+      rules: [], 
+      colors: { 
+        'editor.background': '#0f1523', 
+        'editor.lineHighlightBackground': '#182235',
+        'editorCursor.foreground': '#00f0ff',
+        'editorLineNumber.foreground': '#334155',
+        'editorLineNumber.activeForeground': '#00f0ff'
+      }
+    });
+  };
+
+  // --- 2. МАРШРУТИЗАТОР ТЕМ ---
+  const resolveMonacoTheme = (t) => {
+    if (t === 'light') return 'devex-light';
+    if (t === 'rain') return 'devex-rain';
+    return 'devex-dark';
   };
 
   useEffect(() => {
-    if (monaco) monaco.editor.setTheme(theme === 'light' ? 'devex-light' : 'devex-dark');
+    if (monaco) monaco.editor.setTheme(resolveMonacoTheme(theme));
   }, [theme, monaco]);
 
   const playCyberPing = () => {
@@ -69,7 +89,6 @@ export default function Workspace() {
     } catch (e) {}
   };
 
-  // --- Логика обработки очереди уведомлений ---
   useEffect(() => {
     if (toastQueue.length > 0 && !toast) {
       playCyberPing();
@@ -127,7 +146,6 @@ export default function Workspace() {
   }, [activeCourse]);
 
   const activeLesson = flattenedLessons[currentLessonIdx];
-  const activeModule = activeCourse?.modules.find(m => m._id === activeLesson?.moduleId);
 
   const handleRun = () => {
     if (!activeLesson) return;
@@ -142,7 +160,6 @@ export default function Workspace() {
       if (validation.isValid) { 
         setLogs(prev => [...prev, `> <span style="color: var(--accent-energy)">УСПЕШНО</span>. Алгоритм верен.`]);
         
-        // --- Анализ для ачивок ---
         const timeSpent = (Date.now() - lessonStartTime) / 1000;
         const currentHour = new Date().getHours();
         const uniqueTags = new Set(files.html.match(/<\/?([a-z0-9]+)/gi)?.map(t => t.replace(/[</>]/g, '').toLowerCase()) || []);
@@ -163,15 +180,13 @@ export default function Workspace() {
       } else {
         setFailCount(prev => prev + 1);
         
-        // Логика импланта Cassie
         if (activatedImplants.includes('cassie')) {
-           setLogs(prev => [...prev, `> [IMPLANT] Cassie: <span style="color: #a855f7">Перехват нестабильного кода. Энергия сохранена. Анализ ошибки: ${validation.error}</span>`]);
+           setLogs(prev => [...prev, `> [IMPLANT] Cassie: <span style="color: #00f0ff">Перехват нестабильного кода. Энергия сохранена. Анализ ошибки: ${validation.error}</span>`]);
            return; 
         }
 
         setLogs(prev => [...prev, `> <span style="color: #ff3333">[ОШИБКА]</span> Несоответствие контракту.`]);
         
-        // Логика импланта Locator
         if (activatedImplants.includes('locator')) {
           if (operator.energy >= 1) {
             useUIStore.getState().useEnergy(1);
@@ -258,7 +273,6 @@ export default function Workspace() {
 
   if (isLoading) return <div style={{ flex: 1, padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1 style={{ fontFamily: 'var(--font-tech)', fontSize: '20px', color: 'var(--text-muted)' }}>Синхронизация...</h1></div>;
 
-  // --- ИСПРАВЛЕНИЕ: КРАШ ПРИ УДАЛЕНИИ КУРСА ---
   if (!selectedChapter || (selectedChapter && !activeCourse)) {
     return (
       <div style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
@@ -279,7 +293,6 @@ export default function Workspace() {
     );
   }
 
-  // --- ИСПРАВЛЕНИЕ: ПУСТОЙ ВЕКТОР ---
   if (flattenedLessons.length === 0 || !activeLesson) {
     return (
       <div style={{ flex: 1, padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -300,7 +313,6 @@ export default function Workspace() {
 
   return (
     <>
-      {/* Кастомные скроллбары */}
       <style>{`
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-panel); border-radius: 4px; }
@@ -310,7 +322,6 @@ export default function Workspace() {
       
       <div style={{ display: 'flex', width: '100%', height: '100%', minWidth: 0, padding: '8px', gap: '8px', position: 'relative' }}>
         
-        {/* --- ЭКРАН ПЕРЕХОДА (OVERLAY) --- */}
         <AnimatePresence>
           {showBoundary && (
             <motion.div
@@ -319,7 +330,7 @@ export default function Workspace() {
               exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
               style={{
                 position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                background: theme === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(10, 10, 10, 0.85)',
+                background: theme === 'light' ? 'rgba(255,255,255,0.85)' : theme === 'rain' ? 'rgba(7, 10, 16, 0.85)' : 'rgba(10, 10, 10, 0.85)',
                 zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 borderRadius: '8px', border: '1px solid var(--accent-energy)'
               }}
@@ -376,7 +387,7 @@ export default function Workspace() {
               <Editor 
                 height="100%" 
                 language={activeTab === 'js' ? 'javascript' : activeTab} 
-                theme={theme === 'light' ? 'devex-light' : 'devex-dark'} 
+                theme={resolveMonacoTheme(theme)} 
                 value={files[activeTab]} 
                 onChange={handleEditorChange} 
                 beforeMount={handleEditorWillMount} 
@@ -397,7 +408,7 @@ export default function Workspace() {
               </div>
             </div>
 
-            <div className="panel preview-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', margin: 0, padding: 0, overflow: 'hidden', height: '100%', resize: 'none', background: theme === 'light' ? '#ffffff' : '#1a1a1a' }}>
+            <div className="panel preview-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', margin: 0, padding: 0, overflow: 'hidden', height: '100%', resize: 'none', background: theme === 'light' ? '#ffffff' : theme === 'rain' ? '#0f1523' : '#1a1a1a' }}>
               <div className="header-tech" style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', margin: 0 }}>
                 <span>ВИЗУАЛИЗАЦИЯ // DOM</span>
               </div>
@@ -459,9 +470,9 @@ export default function Workspace() {
                     <div className={`implants-hub ${isHubOpen ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '46px' }}>
                         <div style={{ position: 'relative', display: 'flex', gap: '8px' }}>
                             <button className={`implant-trigger ${isHubOpen ? 'active' : ''}`} onClick={() => setIsHubOpen(!isHubOpen)} style={{ width: '46px', height: '46px' }}><Plus weight="bold" /></button>
-                            {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" onClick={() => toggleImplant('emmet')}><TerminalWindowIcon weight="duotone" /></div>}
-                            {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" onClick={() => toggleImplant('locator')}><BugIcon weight="duotone" /></div>}
-                            {isHubOpen && unlockedImplants.includes('cassie') && <div className="implant-node" onClick={() => toggleImplant('cassie')}><Cpu weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" data-tooltip="Emmet // Авто-код" onClick={() => toggleImplant('emmet')}><TerminalWindowIcon weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" data-tooltip="Locator // Рентген DOM" onClick={() => toggleImplant('locator')}><BugIcon weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('cassie') && <div className="implant-node" data-tooltip="Cassie // Нейро-суфлер" onClick={() => toggleImplant('cassie')}><Cpu weight="duotone" /></div>}
                         </div>
                         <div className="status-right" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
                             <div className="selected-implants" style={{ display: 'flex', gap: '8px' }}>
@@ -470,7 +481,7 @@ export default function Workspace() {
                                 {activatedImplants.includes('cassie') && <Cpu className="implant-activated" />}
                             </div>
                             <div className="battery-pack">
-                               {[...Array(3)].map((_, i) => <div key={i} className={`battery-cell ${i < operator.energy ? 'filled' : ''}`} />)}
+                                {[...Array(3)].map((_, i) => <div key={i} className={`battery-cell ${i < operator.energy ? 'filled' : ''}`} />)}
                             </div>
                         </div>
                     </div>
