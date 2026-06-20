@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { SquaresFour, Users, Books, SignOut, CaretLeft, List, Hexagon, Sun, Moon } from '@phosphor-icons/react';
+import { SquaresFour, Users, Books, SignOut, CaretLeft, List, Hexagon, Sun, Moon, CloudRain } from '@phosphor-icons/react';
 import { useUIStore } from '../../store/uiStore';
 import './Admin.css'; 
 
@@ -9,17 +9,33 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Достаем актуальные данные из обновленного стора
   const { theme, setTheme } = useUIStore();
 
   const isActive = (path) => location.pathname.includes(path) ? 'active' : '';
+
+  // Трехтактный переключатель
+  const handleThemeCycle = () => {
+    if (theme === 'dark') setTheme('light');
+    else if (theme === 'light') setTheme('rain');
+    else setTheme('dark');
+  };
+
+  const getThemeConfig = () => {
+    switch (theme) {
+      case 'dark': return { icon: <Sun size={22} weight="duotone" />, label: "Светлая тема" };
+      case 'light': return { icon: <CloudRain size={22} color="#00f0ff" weight="duotone" />, label: "Неоновый ливень" };
+      case 'rain': return { icon: <Moon size={22} weight="duotone" />, label: "Темная тема" };
+      default: return { icon: <Sun size={22} weight="duotone" />, label: "Светлая тема" };
+    }
+  };
+
+  const nextTheme = getThemeConfig();
 
   return (
     <div className="admin-layout">
       
       <aside className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
         
-        {/* Интегрированная шапка */}
         <div className="sidebar-header">
           <div className="admin-logo">
             <Hexagon size={28} weight="duotone" className="logo-icon" color="var(--admin-accent)" />
@@ -39,9 +55,9 @@ export default function AdminLayout() {
 
         <div className="admin-nav bottom">
           <NavItem 
-            icon={theme === 'light' ? <Moon size={22} weight="duotone" /> : <Sun size={22} weight="duotone" />} 
-            label={theme === 'light' ? "Темная тема" : "Светлая тема"} 
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} 
+            icon={nextTheme.icon} 
+            label={nextTheme.label} 
+            onClick={handleThemeCycle} 
           />
           <NavItem icon={<SignOut size={22} />} label="В Хаб" onClick={() => navigate('/')} className="danger" />
         </div>
@@ -55,7 +71,6 @@ export default function AdminLayout() {
   );
 }
 
-// Компонент-помощник
 function NavItem({ icon, label, active, onClick, className = "" }) {
   return (
     <div className={`nav-pill ${active} ${className}`} onClick={onClick} title={label}>
