@@ -53,7 +53,7 @@ return (
         <Route path="/implants" element={<Implants />} />
       </Route>
 
-      {/* --- АДМИНКА С ГАРДОМ И АВТО-РЕДИРЕКТОМ НА ДАШБОРД --- */}
+      {/* --- АДМИН-ПАНЕЛЬ С ЗАЩИТОЙ И АВТО-РЕДИРЕКТОМ НА ДАШБОРД --- */}
       <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
