@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 export const useUIStore = create(
   persist(
     (set, get) => ({
-      theme: 'dark',
+      theme: 'dark', // 'dark' | 'light' | 'rain'
       selectedChapter: null,
       currentLessonIdx: 0,
       
@@ -13,9 +13,10 @@ export const useUIStore = create(
         isAuthenticated: false,
         exp: 0,
         level: 1,
-        tokens: 0,
+        tokens: 150, // Дадим 150 токенов на мелкие расходы
         energy: 3,
-        unlockedImplants: [],
+        // ВОТ ОН — СТАРТОВЫЙ ПАКЕТ ПРЕВОСХОДСТВА (Cassie, Locator, Emmet)
+        unlockedImplants: ['emmet', 'locator', 'cassie'], 
       },
       
       setTheme: (t) => set({ theme: t }),
@@ -107,18 +108,22 @@ export const useUIStore = create(
           level: 1,
           tokens: 0,
           energy: 3,
-          unlockedImplants: []
+          unlockedImplants: ['emmet', 'locator', 'cassie'] // При сбросе OP-пакет сохраняется
         }
       })),
     }),
     {
       name: 'devex-operator-storage',
+      // УМНЫЙ MERGE: Принудительно вшивает импланты в старый кэш браузера
       merge: (persistedState, currentState) => ({
         ...currentState,
         ...persistedState,
         operator: {
           ...currentState.operator,
-          ...(persistedState?.operator || {})
+          ...(persistedState?.operator || {}),
+          unlockedImplants: persistedState?.operator?.unlockedImplants?.length > 0
+            ? persistedState.operator.unlockedImplants
+            : ['emmet', 'locator', 'cassie']
         }
       })
     }
