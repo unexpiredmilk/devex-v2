@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Hexagon, BookOpenText, Trophy, Sun, Moon, Cpu } from '@phosphor-icons/react';
+import { Hexagon, BookOpenText, Trophy, Sun, Moon, CloudRain, Cpu } from '@phosphor-icons/react';
 import avatarImg from '../assets/img/meswag.png';
 import { useUIStore } from '../store/uiStore';
 
@@ -8,8 +8,26 @@ export default function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path ? 'active' : '';
   
-  // Берем setTheme из обновленного стора
   const { theme, setTheme } = useUIStore();
+
+  // Трехтактный переключатель
+  const handleThemeCycle = () => {
+    if (theme === 'dark') setTheme('light');
+    else if (theme === 'light') setTheme('rain');
+    else setTheme('dark');
+  };
+
+  // Вычисление иконки и тултипа для следующего шага
+  const getThemeConfig = () => {
+    switch (theme) {
+      case 'dark': return { icon: <Sun size={28} className="theme-toggle" />, label: "СВЕТЛАЯ ТЕМА" };
+      case 'light': return { icon: <CloudRain size={28} className="theme-toggle" color="#38bdf8" weight="duotone" />, label: "НЕОНОВЫЙ ЛИВЕНЬ" };
+      case 'rain': return { icon: <Moon size={28} className="theme-toggle" />, label: "ТЕМНАЯ ТЕМА" };
+      default: return { icon: <Sun size={28} className="theme-toggle" />, label: "СВЕТЛАЯ ТЕМА" };
+    }
+  };
+
+  const nextTheme = getThemeConfig();
 
   return (
     <aside className="panel sidebar">
@@ -35,13 +53,9 @@ export default function Sidebar() {
       {/* НИЖНИЙ БЛОК: Тема и Профиль */}
       <div className="nav-links" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
-        {/* Кнопка смены темы */}
-        <div className="nav-icon-wrapper" data-tooltip={theme === 'light' ? "ТЕМНАЯ ТЕМА" : "СВЕТЛАЯ ТЕМА"}>
-          {theme === 'light' ? (
-            <Moon size={28} className="theme-toggle" onClick={() => setTheme('dark')} />
-          ) : (
-            <Sun size={28} className="theme-toggle" onClick={() => setTheme('light')} />
-          )}
+        {/* Трехпозиционная кнопка темы */}
+        <div className="nav-icon-wrapper" data-tooltip={nextTheme.label} onClick={handleThemeCycle}>
+          {nextTheme.icon}
         </div>
         
         {/* Аватар */}
