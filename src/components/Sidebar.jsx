@@ -1,6 +1,5 @@
 // git-case-breaker-patch-v1
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { Hexagon, BookOpenText, Trophy, Sun, Moon, CloudRain, Cpu } from '@phosphor-icons/react';
 import avatarImg from '../assets/img/meswag.png';
 import { useUIStore } from '../store/uiStore';
