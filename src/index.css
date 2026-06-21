@@ -25,6 +25,7 @@
     --text-main: #e0e0e0; 
     --text-muted: #888888;
     --accent-energy: #ff6b00;
+    --accent-subtle: rgba(255, 107, 0, 0.1);
     --font-tech: 'BetterVCR', monospace; 
     --font-icon: 'Doto', monospace; 
     --font-ui: 'Helvetica Neue', Helvetica, sans-serif;
@@ -47,6 +48,7 @@
     --text-main: #18202b; 
     --text-muted: #555555;
     --accent-energy: #d95b00;
+    --accent-subtle: rgba(217, 91, 0, 0.1);
 
     /* АДМИНКА (Светлая тема) */
     --admin-bg-main: #e7e8e4;
@@ -66,6 +68,7 @@
     --text-main: #e2e8f0; 
     --text-muted: #64748b;
     --accent-energy: #00f0ff; 
+    --accent-subtle: rgba(0, 240, 255, 0.1);
 
     /* АДМИНКА (Неоновый ливень) */
     --admin-bg-main: #070a10;
@@ -140,7 +143,7 @@ a { text-decoration: none; color: inherit; }
 .theory-module { flex: 1; min-width: 320px; max-width: 420px; padding: 20px; gap: 20px; }
 .theory-content h1 { font-family: var(--font-display); color: var(--text-main); transition: color 0.3s ease; }
 .theory-content p { line-height: 1.8; font-size: 14px; margin-bottom: 20px; }
-.task-box { background: rgba(255, 107, 0, 0.05); border: 1px solid var(--accent-energy); padding: 16px; border-radius: 8px; margin-top: 16px; font-size: 13px; line-height: 1.5; }
+.task-box { background: var(--accent-subtle); border: 1px solid var(--accent-energy); padding: 16px; border-radius: 8px; margin-top: 16px; font-size: 13px; line-height: 1.5; }
 
 /* --- РЕДАКТОР И ТЕРМИНАЛ --- */
 .workspace { flex: 2; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
@@ -149,12 +152,12 @@ a { text-decoration: none; color: inherit; }
 .tab-group { display: flex; }
 .tab { padding: 10px 20px; font-family: var(--font-tech); font-size: 12px; color: var(--text-muted); border-right: 1px solid var(--border-color); cursor: pointer; }
 .tab.active { color: var(--accent-energy); background-color: var(--bg-element); }
-.play-btn { background: rgba(255, 107, 0, 0.1); border: 1px solid var(--accent-energy); color: var(--accent-energy); font-family: var(--font-tech); font-size: 12px; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+.play-btn { background: var(--accent-subtle); border: 1px solid var(--accent-energy); color: var(--accent-energy); font-family: var(--font-tech); font-size: 12px; padding: 6px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
 .play-btn:hover { background: var(--accent-energy); color: #000; }
 .terminal-container { height: 180px; min-height: 80px; padding: 12px 16px; font-family: var(--font-tech); resize: vertical; overflow: auto; }
 .terminal-output { color: var(--text-muted); margin-top: 8px; font-size: 14px; line-height: 1.5; }
 
-/* --- ТУЛТИПЫ --- */
+/* --- ИСПРАВЛЕННЫЕ ТУЛТИПЫ --- */
 .sidebar { overflow: visible !important; } 
 .nav-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; cursor: pointer; }
 .nav-icon-wrapper::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 16px); top: 50%; transform: translateY(-50%); background-color: var(--bg-panel); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-energy); color: var(--text-main); padding: 8px 12px; border-radius: 4px; font-family: var(--font-tech); font-size: 12px; letter-spacing: 0.5px; white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -164,9 +167,28 @@ a { text-decoration: none; color: inherit; }
 .achievement-wrapper::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(10px); background-color: var(--bg-element); border: 1px solid var(--accent-energy); color: var(--text-main); padding: 8px 12px; border-radius: 4px; font-family: var(--font-tech); font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 .achievement-wrapper:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.implant-node-wrapper { position: relative; cursor: help; }
-.implant-node-wrapper::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 12px); right: 0; background-color: var(--bg-element); border: 1px solid var(--accent-energy); color: var(--text-main); padding: 8px 12px; border-radius: 6px; font-family: var(--font-tech); font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
-.implant-node-wrapper:hover::after { opacity: 1; transform: translateY(-4px); }
+/* Тултип прямо на самой орбитальной ноде */
+.implant-node::after { 
+    content: attr(data-tooltip); 
+    position: absolute; 
+    bottom: calc(100% + 8px); 
+    left: 50%; 
+    transform: translateX(-50%) translateY(4px); 
+    background-color: var(--bg-panel); 
+    border: 1px solid var(--accent-energy); 
+    color: var(--text-main); 
+    padding: 6px 10px; 
+    border-radius: 6px; 
+    font-family: var(--font-tech); 
+    font-size: 11px; 
+    white-space: nowrap; 
+    opacity: 0; 
+    pointer-events: none; 
+    transition: all 0.2s ease; 
+    z-index: 9999; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8); 
+}
+.implant-node:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 .energy-display { font-family: var(--font-tech); font-size: 14px; color: var(--accent-energy); letter-spacing: 2px; }
 
@@ -178,7 +200,7 @@ a { text-decoration: none; color: inherit; }
 .profile-avatar { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--border-color); object-fit: cover; }
 .identity-info h1 { font-family: var(--font-tech); font-size: 28px; margin-bottom: 4px; color: var(--text-main); }
 .identity-info h2 { font-size: 16px; color: var(--text-muted); font-weight: 400; margin-bottom: 12px; }
-.operator-status { display: inline-block; background-color: rgba(255, 107, 0, 0.1); color: var(--accent-energy); border: 1px solid var(--accent-energy); padding: 4px 12px; border-radius: 4px; font-family: var(--font-tech); font-size: 12px; margin-top: 12px; }
+.operator-status { display: inline-block; background-color: var(--accent-subtle); color: var(--accent-energy); border: 1px solid var(--accent-energy); padding: 4px 12px; border-radius: 4px; font-family: var(--font-tech); font-size: 12px; margin-top: 12px; }
 .card-tokens { grid-column: span 3; justify-content: center; align-items: center; text-align: center; }
 .token-amount { font-family: var(--font-tech); font-size: 48px; color: var(--accent-energy); text-shadow: 0 0 10px rgba(0,240,255,0.3); margin: 8px 0; }
 .token-label { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
@@ -212,9 +234,10 @@ a { text-decoration: none; color: inherit; }
 .implants-hub.active .implant-node:nth-child(4) { opacity: 1; pointer-events: auto; transform: translate(65px, 5px); }
 .implant-node:hover { background-color: var(--bg-element); border-color: var(--accent-energy); }
 
+/* ИСПРАВЛЕННЫЙ ПРАВЫЙ БЛОК ИМПЛАНТОВ */
 .status-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; padding-bottom: 4px; }
-.selected-implants { display: flex; gap: 8px; color: var(--text-muted); font-size: 20px; min-height: 32px; align-items: center; }
-.implant-activated { background: rgba(255, 107, 0, 0.1); border: 1px solid var(--accent-energy); padding: 6px; border-radius: 8px; color: var(--accent-energy); box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+.selected-implants { display: flex; gap: 8px; height: 46px; align-items: center; }
+.implant-activated { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: var(--accent-subtle); border: 1px solid var(--accent-energy); border-radius: 10px; color: var(--accent-energy); box-shadow: 0 0 10px var(--accent-subtle); }
 
 .battery-pack { height: 46px; display: flex; gap: 6px; padding: 0 10px; border: 2px solid var(--border-color); border-radius: 10px; background-color: var(--bg-panel); align-items: center; }
 .battery-cell { width: 22px; height: 28px; background-color: var(--bg-element); border-radius: 6px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
@@ -232,24 +255,16 @@ a { text-decoration: none; color: inherit; }
   100% { transform: translateX(120%); opacity: 0; }
 }
 
-/* ==========================================================================
-   ЭКСПЕРИМЕНТАЛЬНАЯ МОБИЛЬНАЯ МАТРИЦА (Адаптив < 768px)
-   ========================================================================== */
 @media (max-width: 768px) {
     body { overflow-y: auto !important; height: auto; min-height: 100vh; }
     #root { flex-direction: column; height: auto; padding: 8px; gap: 16px; }
-    
-    /* Сайдбар прыгает наверх */
     .sidebar { width: 100%; height: 64px; flex-direction: row; padding: 0 16px; border-radius: 12px; }
     .nav-links { flex-direction: row; width: auto; gap: 16px; }
     .nav-links:last-child { margin-top: 0; margin-left: auto; gap: 12px; }
     .nav-icon-wrapper::after { display: none; } 
-    
-    /* Блоки выстраиваются друг под другом */
     .theory-module { max-width: 100% !important; width: 100%; height: auto; min-height: 350px; order: 1; }
     .workspace { order: 2; height: 650px; }
     .editor-container { min-height: 350px; }
-    
     .profile-dashboard { grid-template-columns: 1fr; padding: 12px; }
     .card-identity, .card-tokens, .card-stats, .card-showcase { grid-column: span 1 !important; }
     .card-identity { flex-direction: column; text-align: center; }
