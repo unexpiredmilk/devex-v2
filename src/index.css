@@ -255,16 +255,45 @@ a { text-decoration: none; color: inherit; }
   100% { transform: translateX(120%); opacity: 0; }
 }
 
+/* ==========================================================================
+   МОБИЛЬНАЯ МАТРИЦА (Адаптив < 768px)
+   ========================================================================== */
+.mobile-view-switcher { display: none; }
+
 @media (max-width: 768px) {
     body { overflow-y: auto !important; height: auto; min-height: 100vh; }
-    #root { flex-direction: column; height: auto; padding: 8px; gap: 16px; }
-    .sidebar { width: 100%; height: 64px; flex-direction: row; padding: 0 16px; border-radius: 12px; }
+    #root { flex-direction: column; height: auto; padding: 8px; gap: 12px; }
+    
+    /* Верхняя панель навигации */
+    .sidebar { width: 100%; height: 60px; flex-direction: row; padding: 0 16px; border-radius: 12px; order: 0; }
     .nav-links { flex-direction: row; width: auto; gap: 16px; }
     .nav-links:last-child { margin-top: 0; margin-left: auto; gap: 12px; }
     .nav-icon-wrapper::after { display: none; } 
-    .theory-module { max-width: 100% !important; width: 100%; height: auto; min-height: 350px; order: 1; }
-    .workspace { order: 2; height: 650px; }
-    .editor-container { min-height: 350px; }
+    .desktop-only { display: none !important; }
+
+    /* Тумблер режимов */
+    .mobile-view-switcher { display: flex; flex-direction: row; height: 42px; border-radius: 8px; p-padding: 4px; gap: 4px; order: 1; background: var(--bg-panel); border: 1px solid var(--border-color); }
+    .mobile-view-switcher button { flex: 1; background: transparent; border: none; color: var(--text-muted); font-family: var(--font-tech); font-size: 13px; font-weight: bold; border-radius: 6px; transition: 0.2s; }
+    .mobile-view-switcher button.active { background: var(--bg-element); color: var(--accent-energy); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); border: 1px solid var(--border-color); }
+
+    /* Оболочка рабочего пространства */
+    .workspace-layout { flex-direction: column !important; height: auto !important; gap: 12px !important; }
+    
+    /* Скрываем всё, кроме активного таба */
+    .theory-sidebar-wrapper, .workspace { display: none !important; order: 2; width: 100% !important; height: 600px !important; }
+    .theory-sidebar-wrapper.mobile-active, .workspace.mobile-active { display: flex !important; }
+    
+    .theory-module { width: 100% !important; max-width: 100% !important; height: 100% !important; }
+    
+    /* Внутри Workspace (Код vs DOM) */
+    .editor-container, .bottom-split { display: none !important; height: 100% !important; }
+    .editor-container.mobile-active, .bottom-split.mobile-active { display: flex !important; }
+
+    .bottom-split { flex-direction: column !important; }
+    .terminal-container { flex: 1 !important; min-height: 150px; }
+    .preview-container { flex: 2 !important; min-height: 300px; }
+
+    /* Профиль (Bento-стек) */
     .profile-dashboard { grid-template-columns: 1fr; padding: 12px; }
     .card-identity, .card-tokens, .card-stats, .card-showcase { grid-column: span 1 !important; }
     .card-identity { flex-direction: column; text-align: center; }
