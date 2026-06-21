@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { SquaresFour, Users, Books, SignOut, CaretLeft, List, Hexagon, Sun, Moon, CloudRain } from '@phosphor-icons/react';
+// ИСПРАВЛЕНИЕ: Иконка Users ампутирована за ненадобностью
+import { SquaresFour, Books, SignOut, CaretLeft, List, Hexagon, Sun, Moon, CloudRain } from '@phosphor-icons/react';
 import { useUIStore } from '../../store/uiStore';
 import './Admin.css'; 
 
