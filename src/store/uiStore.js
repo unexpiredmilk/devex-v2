@@ -13,10 +13,11 @@ export const useUIStore = create(
         isAuthenticated: false,
         exp: 0,
         level: 1,
-        tokens: 150, // Дадим 150 токенов на мелкие расходы
+        tokens: 150, 
         energy: 3,
-        // ВОТ ОН — СТАРТОВЫЙ ПАКЕТ ПРЕВОСХОДСТВА (Cassie, Locator, Emmet)
         unlockedImplants: ['emmet', 'locator', 'cassie'], 
+        unlockedAchievements: [], // <-- ВШИЛИ ХРАНИЛИЩЕ АЧИВОК
+        stats: { emmetUsed: 0 }
       },
       
       setTheme: (t) => set({ theme: t }),
@@ -25,6 +26,34 @@ export const useUIStore = create(
 
       login: (name) => set((state) => ({
         operator: { ...state.operator, name, isAuthenticated: true }
+      })),
+
+      // --- ДОБАВЛЕННЫЙ ДВИЖОК АЧИВОК ---
+      unlockAchievement: (id) => {
+        const op = get().operator;
+        const alreadyUnlocked = op.unlockedAchievements?.includes(id);
+        
+        if (!alreadyUnlocked) {
+          set({
+            operator: {
+              ...op,
+              unlockedAchievements: [...(op.unlockedAchievements || []), id],
+              tokens: op.tokens + 25 // Приятный бонус за достижение
+            }
+          });
+          return true; // Возвращает true, чтобы Workspace понял: "О, новая ачивка, запускай тост!"
+        }
+        return false;
+      },
+
+      incrementEmmet: () => set((state) => ({
+        operator: {
+          ...state.operator,
+          stats: { 
+            ...(state.operator.stats || {}), 
+            emmetUsed: (state.operator.stats?.emmetUsed || 0) + 1 
+          }
+        }
       })),
 
       addReward: (expAmount, tokenAmount) => set((state) => {
@@ -108,19 +137,20 @@ export const useUIStore = create(
           level: 1,
           tokens: 0,
           energy: 3,
-          unlockedImplants: ['emmet', 'locator', 'cassie'] // При сбросе OP-пакет сохраняется
+          unlockedAchievements: [],
+          unlockedImplants: ['emmet', 'locator', 'cassie'] 
         }
       })),
     }),
     {
       name: 'devex-operator-storage',
-      // УМНЫЙ MERGE: Принудительно вшивает импланты в старый кэш браузера
       merge: (persistedState, currentState) => ({
         ...currentState,
         ...persistedState,
         operator: {
           ...currentState.operator,
           ...(persistedState?.operator || {}),
+          unlockedAchievements: persistedState?.operator?.unlockedAchievements || [],
           unlockedImplants: persistedState?.operator?.unlockedImplants?.length > 0
             ? persistedState.operator.unlockedImplants
             : ['emmet', 'locator', 'cassie']
