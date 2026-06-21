@@ -13,7 +13,7 @@ export default function Workspace() {
   const monaco = useMonaco();
   
   const [isLoading, setIsLoading] = useState(false);
-
+  const [mobileView, setMobileView] = useState('theory'); // 'theory' | 'editor' | 'preview'
   const [activeTab, setActiveTab] = useState('html');
   const [files, setFiles] = useState({ html: '', css: '', js: '' });
   const activeTabRef = useRef(activeTab); 
@@ -318,88 +318,55 @@ export default function Workspace() {
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-energy); }
       `}</style>
       
-      <div style={{ display: 'flex', width: '100%', height: '100%', minWidth: 0, padding: '8px', gap: '8px', position: 'relative' }}>
+      <div className="workspace-layout" style={{ display: 'flex', width: '100%', height: '100%', minWidth: 0, padding: '8px', gap: '8px', position: 'relative' }}>
         
         <AnimatePresence>
           {showBoundary && (
             <motion.div
-              initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
-              exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              style={{
-                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                background: theme === 'light' ? 'rgba(255,255,255,0.85)' : theme === 'rain' ? 'rgba(7, 10, 16, 0.85)' : 'rgba(10, 10, 10, 0.85)',
-                zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                borderRadius: '8px', border: '1px solid var(--accent-energy)'
-              }}
+              initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} animate={{ opacity: 1, backdropFilter: 'blur(12px)' }} exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: theme === 'light' ? 'rgba(255,255,255,0.85)' : theme === 'rain' ? 'rgba(7, 10, 16, 0.85)' : 'rgba(10, 10, 10, 0.85)', zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: '1px solid var(--accent-energy)' }}
             >
               <ShieldCheck size={80} color="var(--accent-energy)" weight="duotone" style={{ marginBottom: '24px' }} />
-              <h1 style={{ fontFamily: 'var(--font-tech)', fontSize: '42px', color: 'var(--text-main)', textTransform: 'uppercase', marginBottom: '16px' }}>
-                {showBoundary === 'course' ? 'ВЕКТОР СИНТЕЗИРОВАН' : 'МОДУЛЬ УСВОЕН'}
-              </h1>
-              <p style={{ color: 'var(--text-muted)', fontSize: '16px', maxWidth: '500px', textAlign: 'center', marginBottom: '40px', lineHeight: '1.5' }}>
-                {showBoundary === 'course' 
-                  ? 'Вы успешно завершили все модули данного направления. Полученные навыки сохранены в базе данных оператора.'
-                  : 'Блок данных успешно записан в память. Восстановлен 1 заряд АКБ. Готовы приступить к следующему этапу?'}
-              </p>
+              <h1 style={{ fontFamily: 'var(--font-tech)', fontSize: '42px', color: 'var(--text-main)', textTransform: 'uppercase', marginBottom: '16px' }}>{showBoundary === 'course' ? 'ВЕКТОР СИНТЕЗИРОВАН' : 'МОДУЛЬ УСВОЕН'}</h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '16px', maxWidth: '500px', textAlign: 'center', marginBottom: '40px', lineHeight: '1.5' }}>{showBoundary === 'course' ? 'Вы успешно завершили все модули. Навыки сохранены.' : 'Блок данных записан в память. Восстановлен 1 заряд АКБ.'}</p>
               
               <div style={{ display: 'flex', gap: '20px' }}>
-                <button 
-                  onClick={() => { setShowBoundary(false); setChapter(null); setLesson(0); }}
-                  style={{ padding: '14px 28px', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-tech)', borderRadius: '6px' }}
-                >
-                  &larr; В ХАБ
-                </button>
-                
-                {showBoundary === 'module' && (
-                  <button 
-                    onClick={() => { setShowBoundary(false); setLesson(currentLessonIdx + 1); }}
-                    style={{ padding: '14px 28px', background: 'var(--accent-energy)', border: 'none', color: '#000', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', fontFamily: 'var(--font-tech)', borderRadius: '6px', boxShadow: '0 0 15px rgba(234, 88, 12, 0.3)' }}
-                  >
-                    СЛЕДУЮЩИЙ МОДУЛЬ &rarr;
-                  </button>
-                )}
+                <button onClick={() => { setShowBoundary(false); setChapter(null); setLesson(0); }} style={{ padding: '14px 28px', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-tech)', borderRadius: '6px' }}>&larr; В ХАБ</button>
+                {showBoundary === 'module' && <button onClick={() => { setShowBoundary(false); setLesson(currentLessonIdx + 1); }} style={{ padding: '14px 28px', background: 'var(--accent-energy)', border: 'none', color: '#000', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', fontFamily: 'var(--font-tech)', borderRadius: '6px', boxShadow: '0 0 15px rgba(234, 88, 12, 0.3)' }}>СЛЕДУЮЩИЙ МОДУЛЬ &rarr;</button>}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <section className="workspace" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0, height: '100%' }}>
+        {/* --- МОБИЛЬНЫЙ ТУМБЛЕР (Виден только на экранах < 768px) --- */}
+        <div className="mobile-view-switcher panel">
+          <button className={mobileView === 'theory' ? 'active' : ''} onClick={() => setMobileView('theory')}>ТЕОРИЯ</button>
+          <button className={mobileView === 'editor' ? 'active' : ''} onClick={() => setMobileView('editor')}>КОД</button>
+          <button className={mobileView === 'preview' ? 'active' : ''} onClick={() => setMobileView('preview')}>DOM</button>
+        </div>
+
+        <section className={`workspace ${mobileView === 'editor' || mobileView === 'preview' ? 'mobile-active' : ''}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0, height: '100%' }}>
           
-          <div className="panel editor-container" style={{ flex: 3, display: 'flex', flexDirection: 'column', minHeight: '250px', resize: 'none' }}>
+          <div className={`panel editor-container ${mobileView === 'editor' ? 'mobile-active' : ''}`} style={{ flex: 3, display: 'flex', flexDirection: 'column', minHeight: '250px', resize: 'none' }}>
             <div className="tabs">
               <div className="tab-group">
-                <div className="tab" onClick={() => { setChapter(null); setLesson(0); }} style={{ color: 'var(--text-main)', borderRight: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}><CaretLeft /> В ХАБ</div>
-                <div className={`tab ${activeTab === 'html' ? 'active' : ''}`} onClick={() => setActiveTab('html')} style={{ cursor: 'pointer' }}>index.html</div>
-                <div className={`tab ${activeTab === 'css' ? 'active' : ''}`} onClick={() => setActiveTab('css')} style={{ cursor: 'pointer' }}>style.css</div>
-                <div className={`tab ${activeTab === 'js' ? 'active' : ''}`} onClick={() => setActiveTab('js')} style={{ cursor: 'pointer' }}>script.js</div>
+                <div className="tab desktop-only" onClick={() => { setChapter(null); setLesson(0); }} style={{ color: 'var(--text-main)', borderRight: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}><CaretLeft /> В ХАБ</div>
+                <div className={`tab ${activeTab === 'html' ? 'active' : ''}`} onClick={() => setActiveTab('html')}>index.html</div>
+                <div className={`tab ${activeTab === 'css' ? 'active' : ''}`} onClick={() => setActiveTab('css')}>style.css</div>
+                <div className={`tab ${activeTab === 'js' ? 'active' : ''}`} onClick={() => setActiveTab('js')}>script.js</div>
               </div>
-              
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button className="play-btn" onClick={handleRun} disabled={isTheory} style={{ opacity: isTheory ? 0.4 : 1, cursor: isTheory ? 'not-allowed' : 'pointer' }}>
-                  <Play weight="fill" size={14} /> ЗАПУСК
-                </button>
+                <button className="play-btn" onClick={handleRun} disabled={isTheory} style={{ opacity: isTheory ? 0.4 : 1, cursor: isTheory ? 'not-allowed' : 'pointer' }}><Play weight="fill" size={14} /> ЗАПУСК</button>
               </div>
             </div>
             <div style={{ flex: 1, overflow: 'hidden', paddingTop: '8px' }}>
-              <Editor 
-                height="100%" 
-                language={activeTab === 'js' ? 'javascript' : activeTab} 
-                theme={resolveMonacoTheme(theme)} 
-                value={files[activeTab]} 
-                onChange={handleEditorChange} 
-                beforeMount={handleEditorWillMount} 
-                onMount={handleEditorMount} 
-                options={{ minimap: { enabled: false }, fontSize: 16, fontFamily: "Consolas, monospace", readOnly: isTheory }} 
-              />
+              <Editor height="100%" language={activeTab === 'js' ? 'javascript' : activeTab} theme={resolveMonacoTheme(theme)} value={files[activeTab]} onChange={handleEditorChange} beforeMount={handleEditorWillMount} onMount={handleEditorMount} options={{ minimap: { enabled: false }, fontSize: 16, fontFamily: "Consolas, monospace", readOnly: isTheory }} />
             </div>
           </div>
 
-          <div style={{ flex: 2, display: 'flex', gap: '8px', minHeight: '200px', alignItems: 'stretch' }}>
+          <div className={`bottom-split ${mobileView === 'preview' ? 'mobile-active' : ''}`} style={{ flex: 2, display: 'flex', gap: '8px', minHeight: '200px', alignItems: 'stretch' }}>
             <div className="panel terminal-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', margin: 0, padding: 0, overflow: 'hidden', height: '100%', resize: 'none' }}>
-              <div className="header-tech" style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', margin: 0 }}>
-                <span>ТЕРМИНАЛ // ВЫВОД</span>
-              </div>
+              <div className="header-tech" style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', margin: 0 }}><span>ТЕРМИНАЛ // ВЫВОД</span></div>
               <div className="terminal-output" style={{ flex: 1, overflowY: 'auto', padding: '16px', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {logs.map((l, i) => <div key={i} dangerouslySetInnerHTML={{ __html: l }} />)}
                 <div ref={terminalEndRef} />
@@ -407,53 +374,25 @@ export default function Workspace() {
             </div>
 
             <div className="panel preview-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', margin: 0, padding: 0, overflow: 'hidden', height: '100%', resize: 'none', background: theme === 'light' ? '#ffffff' : theme === 'rain' ? '#0f1523' : '#1a1a1a' }}>
-              <div className="header-tech" style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', margin: 0 }}>
-                <span>ВИЗУАЛИЗАЦИЯ // DOM</span>
-              </div>
+              <div className="header-tech" style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', margin: 0 }}><span>ВИЗУАЛИЗАЦИЯ // DOM</span></div>
               <div style={{ flex: 1, position: 'relative' }}>
-                <iframe 
-                  srcDoc={injectedCode} 
-                  title="Live Preview" 
-                  sandbox="allow-scripts" 
-                  style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', top: 0, left: 0, backgroundColor: 'transparent' }} 
-                />
+                <iframe srcDoc={injectedCode} title="Live Preview" sandbox="allow-scripts" style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', top: 0, left: 0, backgroundColor: 'transparent' }} />
               </div>
             </div>
           </div>
         </section>
 
-        <div onClick={() => setIsTaskPanelOpen(!isTaskPanelOpen)} className="panel" style={{ width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)', flexShrink: 0 }}>
+        <div onClick={() => setIsTaskPanelOpen(!isTaskPanelOpen)} className="panel desktop-only" style={{ width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)', flexShrink: 0 }}>
           {isTaskPanelOpen ? <CaretRight size={20} /> : <CaretLeft size={20} />}
         </div>
 
-        <motion.div 
-          initial={false} 
-          animate={{ width: isTaskPanelOpen ? 420 : 0, opacity: isTaskPanelOpen ? 1 : 0 }} 
-          transition={{ duration: 0.3 }} 
-          style={{ overflow: 'hidden', flexShrink: 0, minWidth: 0 }}
-        >
+        <motion.div initial={false} animate={{ width: isTaskPanelOpen ? 420 : 0, opacity: isTaskPanelOpen ? 1 : 0 }} transition={{ duration: 0.3 }} className={`theory-sidebar-wrapper ${mobileView === 'theory' ? 'mobile-active' : ''}`} style={{ overflow: 'hidden', flexShrink: 0, minWidth: 0 }}>
           <main className="panel theory-module" style={{ width: '420px', height: '100%', padding: 0, display: 'flex', flexDirection: 'column' }}>
-            
-            <div className="header-tech" style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-color)', margin: 0, flexShrink: 0 }}>
-              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeCourse.title}</span>
-              <span style={{ flexShrink: 0 }}>{currentLessonIdx + 1} / {flattenedLessons.length}</span>
-            </div>
-            
+            <div className="header-tech" style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-color)', margin: 0, flexShrink: 0 }}><span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeCourse.title}</span><span style={{ flexShrink: 0 }}>{currentLessonIdx + 1} / {flattenedLessons.length}</span></div>
             <div className="theory-content" style={{ flex: 1, overflowY: 'auto', padding: '20px 24px 12px 24px' }}>
               <h1 style={{ color: 'var(--text-main)', marginBottom: '12px', fontFamily: 'var(--font-display)', fontSize: '20px' }}>{activeLesson.title}</h1>
-              
-              <div style={{ lineHeight: '1.5', color: 'var(--text-main)', fontSize: '14px', marginBottom: '16px', whiteSpace: 'pre-wrap' }}>
-                {activeLesson.theory}
-              </div>
-
-              {!isTheory && activeLesson.task && (
-                <div className="task-box" style={{ padding: '16px', marginTop: 0, background: 'rgba(234, 88, 12, 0.05)', border: '1px dashed var(--accent-energy)', borderRadius: '6px' }}>
-                  <b style={{ color: 'var(--accent-energy)', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>ЗАДАНИЕ ТЕРМИНАЛА:</b>
-                   <div style={{ color: 'var(--text-main)', fontSize: '13px', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-                     {activeLesson.task}
-                   </div>
-                </div>
-              )}
+              <div style={{ lineHeight: '1.5', color: 'var(--text-main)', fontSize: '14px', marginBottom: '16px', whiteSpace: 'pre-wrap' }}>{activeLesson.theory}</div>
+              {!isTheory && activeLesson.task && <div className="task-box" style={{ padding: '16px', marginTop: 0, background: 'rgba(234, 88, 12, 0.05)', border: '1px dashed var(--accent-energy)', borderRadius: '6px' }}><b style={{ color: 'var(--accent-energy)', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>ЗАДАНИЕ ТЕРМИНАЛА:</b><div style={{ color: 'var(--text-main)', fontSize: '13px', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>{activeLesson.task}</div></div>}
             </div>
 
             <div style={{ background: 'var(--bg-panel)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
@@ -461,14 +400,12 @@ export default function Workspace() {
                   <button onClick={() => setLesson(currentLessonIdx - 1)} disabled={currentLessonIdx === 0} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: currentLessonIdx === 0 ? 'var(--border-color)' : 'var(--text-main)', padding: '6px 14px', borderRadius: '6px', cursor: currentLessonIdx === 0 ? 'not-allowed' : 'pointer', fontSize: '13px' }}>&larr; Назад</button>
                   <button onClick={handleNext} style={{ background: 'rgba(234, 88, 12, 0.1)', border: '1px solid var(--accent-energy)', color: 'var(--accent-energy)', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}>Далее &rarr;</button>
                </div>
-               
                {!isTheory && (
                  <div className="hub-wrapper" style={{ padding: '16px 24px' }}>
                     <div className="implant-hint" style={{ marginBottom: '10px' }}>// МОДУЛИ АКТИВАЦИИ</div>
                     <div className={`implants-hub ${isHubOpen ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '46px' }}>
                         <div style={{ position: 'relative', display: 'flex', gap: '8px' }}>
                             <button className={`implant-trigger ${isHubOpen ? 'active' : ''}`} onClick={() => setIsHubOpen(!isHubOpen)} style={{ width: '46px', height: '46px' }}><Plus weight="bold" /></button>
-                            {/* --- 2. ИСПРАВЛЕННЫЕ ИМЕНА ИКОНОК В JSX --- */}
                             {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" data-tooltip="Emmet" onClick={() => toggleImplant('emmet')}><TerminalWindow weight="duotone" /></div>}
                             {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" data-tooltip="Locator" onClick={() => toggleImplant('locator')}><Bug weight="duotone" /></div>}
                             {isHubOpen && unlockedImplants.includes('cassie') && <div className="implant-node" data-tooltip="Cassie" onClick={() => toggleImplant('cassie')}><Cpu weight="duotone" /></div>}
@@ -492,12 +429,7 @@ export default function Workspace() {
 
         <AnimatePresence>
           {toast && (
-            <motion.div 
-              className="cyber-toast"
-              initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ type: "spring", stiffness: 400, damping: 25 }} 
-              style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '16px' }}
-            >
-              {/* --- 3. ИСПРАВЛЕННАЯ ИКОНКА В TOAST --- */}
+            <motion.div className="cyber-toast" initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ type: "spring", stiffness: 400, damping: 25 }} style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '16px' }}>
               <Trophy size={36} color="var(--accent-energy)" weight="duotone" />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <span style={{ fontFamily: 'var(--font-tech)', fontSize: '11px', color: 'var(--accent-energy)' }}>ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО</span>
