@@ -390,7 +390,7 @@ export default function Workspace() {
                 onChange={handleEditorChange} 
                 beforeMount={handleEditorWillMount} 
                 onMount={handleEditorMount} 
-                options={{ minimap: { enabled: false }, fontSize: 16, fontFamily: "'BetterVCR', monospace", readOnly: isTheory }} 
+                options={{ minimap: { enabled: false }, fontSize: 16, fontFamily: "Consolas, monospace", readOnly: isTheory }} 
               />
             </div>
           </div>
