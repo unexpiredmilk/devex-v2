@@ -2,7 +2,8 @@ import { useUIStore } from '../store/uiStore';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, CaretLeft, CaretRight, TrophyIcon, BugIcon, FileHtml, FileCss, FileJs, Plus, TerminalWindowIcon, ShieldCheck } from '@phosphor-icons/react';
+// --- 1. ИСПРАВЛЕННЫЕ ИМПОРТЫ PHOSPHOR ICONS (Без суффиксов Icon) ---
+import { Play, CaretLeft, CaretRight, Trophy, Bug, FileHtml, FileCss, FileJs, Plus, TerminalWindow, ShieldCheck, Sun, Moon, CloudRain, Cpu } from '@phosphor-icons/react';
 import { validateCode } from '../utils/validator';
 import { useCourseStore } from '../store/courseStore';
 
@@ -45,11 +46,9 @@ export default function Workspace() {
     setFailCount(0);
   }, [currentLessonIdx, selectedChapter]);
 
-  // --- 1. РЕГИСТРАЦИЯ ТРЕХ ПАЛИТР ДЛЯ MONACO ---
   const handleEditorWillMount = (monaco) => {
     monaco.editor.defineTheme('devex-dark', { base: 'vs-dark', inherit: true, rules: [], colors: { 'editor.background': '#1a1a1a' }});
     monaco.editor.defineTheme('devex-light', { base: 'vs', inherit: true, rules: [], colors: { 'editor.background': '#F5F5F5' }});
-    // Грозовая тема для Монако
     monaco.editor.defineTheme('devex-rain', { 
       base: 'vs-dark', 
       inherit: true, 
@@ -64,7 +63,6 @@ export default function Workspace() {
     });
   };
 
-  // --- 2. МАРШРУТИЗАТОР ТЕМ ---
   const resolveMonacoTheme = (t) => {
     if (t === 'light') return 'devex-light';
     if (t === 'rain') return 'devex-rain';
@@ -470,14 +468,15 @@ export default function Workspace() {
                     <div className={`implants-hub ${isHubOpen ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '46px' }}>
                         <div style={{ position: 'relative', display: 'flex', gap: '8px' }}>
                             <button className={`implant-trigger ${isHubOpen ? 'active' : ''}`} onClick={() => setIsHubOpen(!isHubOpen)} style={{ width: '46px', height: '46px' }}><Plus weight="bold" /></button>
-                            {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" data-tooltip="Emmet // Авто-код" onClick={() => toggleImplant('emmet')}><TerminalWindowIcon weight="duotone" /></div>}
-                            {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" data-tooltip="Locator // Рентген DOM" onClick={() => toggleImplant('locator')}><BugIcon weight="duotone" /></div>}
+                            {/* --- 2. ИСПРАВЛЕННЫЕ ИМЕНА ИКОНОК В JSX --- */}
+                            {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" data-tooltip="Emmet // Авто-код" onClick={() => toggleImplant('emmet')}><TerminalWindow weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" data-tooltip="Locator // Рентген DOM" onClick={() => toggleImplant('locator')}><Bug weight="duotone" /></div>}
                             {isHubOpen && unlockedImplants.includes('cassie') && <div className="implant-node" data-tooltip="Cassie // Нейро-суфлер" onClick={() => toggleImplant('cassie')}><Cpu weight="duotone" /></div>}
                         </div>
                         <div className="status-right" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
                             <div className="selected-implants" style={{ display: 'flex', gap: '8px' }}>
-                                {activatedImplants.includes('emmet') && <TerminalWindowIcon className="implant-activated" />}
-                                {activatedImplants.includes('locator') && <BugIcon className="implant-activated" />}
+                                {activatedImplants.includes('emmet') && <TerminalWindow className="implant-activated" />}
+                                {activatedImplants.includes('locator') && <Bug className="implant-activated" />}
                                 {activatedImplants.includes('cassie') && <Cpu className="implant-activated" />}
                             </div>
                             <div className="battery-pack">
@@ -498,7 +497,8 @@ export default function Workspace() {
               initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ type: "spring", stiffness: 400, damping: 25 }} 
               style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '16px' }}
             >
-              <TrophyIcon size={36} color="var(--accent-energy)" weight="duotone" />
+              {/* --- 3. ИСПРАВЛЕННАЯ ИКОНКА В TOAST --- */}
+              <Trophy size={36} color="var(--accent-energy)" weight="duotone" />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <span style={{ fontFamily: 'var(--font-tech)', fontSize: '11px', color: 'var(--accent-energy)' }}>ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО</span>
                 <span className="toast-text-main" style={{ fontSize: '15px', fontWeight: 'bold' }}>{toast.title}</span>
