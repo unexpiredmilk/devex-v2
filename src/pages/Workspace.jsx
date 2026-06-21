@@ -469,9 +469,9 @@ export default function Workspace() {
                         <div style={{ position: 'relative', display: 'flex', gap: '8px' }}>
                             <button className={`implant-trigger ${isHubOpen ? 'active' : ''}`} onClick={() => setIsHubOpen(!isHubOpen)} style={{ width: '46px', height: '46px' }}><Plus weight="bold" /></button>
                             {/* --- 2. ИСПРАВЛЕННЫЕ ИМЕНА ИКОНОК В JSX --- */}
-                            {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" data-tooltip="Emmet // Авто-код" onClick={() => toggleImplant('emmet')}><TerminalWindow weight="duotone" /></div>}
-                            {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" data-tooltip="Locator // Рентген DOM" onClick={() => toggleImplant('locator')}><Bug weight="duotone" /></div>}
-                            {isHubOpen && unlockedImplants.includes('cassie') && <div className="implant-node" data-tooltip="Cassie // Нейро-суфлер" onClick={() => toggleImplant('cassie')}><Cpu weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('emmet') && <div className="implant-node" data-tooltip="Emmet" onClick={() => toggleImplant('emmet')}><TerminalWindow weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('locator') && <div className="implant-node" data-tooltip="Locator" onClick={() => toggleImplant('locator')}><Bug weight="duotone" /></div>}
+                            {isHubOpen && unlockedImplants.includes('cassie') && <div className="implant-node" data-tooltip="Cassie" onClick={() => toggleImplant('cassie')}><Cpu weight="duotone" /></div>}
                         </div>
                         <div className="status-right" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
                             <div className="selected-implants" style={{ display: 'flex', gap: '8px' }}>
