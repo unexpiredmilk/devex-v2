@@ -50,7 +50,6 @@ export default function AdminLayout() {
         <nav className="admin-nav">
           <NavItem icon={<SquaresFour size={22} />} label="Дашборд" active={isActive('/admin/dashboard')} onClick={() => navigate('/admin/dashboard')} />
           <NavItem icon={<Books size={22} />} label="Контент" active={isActive('/admin/courses')} onClick={() => navigate('/admin/courses')} />
-          <NavItem icon={<Users size={22} />} label="Операторы" active={isActive('/admin/users')} onClick={() => navigate('/admin/users')} />
         </nav>
 
         <div className="admin-nav bottom">
