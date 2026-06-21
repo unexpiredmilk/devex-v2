@@ -15,15 +15,13 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminCourseDetails from './pages/admin/AdminCourseDetails';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
-const AdminPlaceholder = ({ title }) => <div style={{ fontSize: '24px', fontWeight: 'bold', padding: '24px', color: 'var(--text-main)' }}>{title} (В разработке)</div>;
+// Компонент AdminPlaceholder вычищен за отсутствием ссылающихся роутов
 
 const MainLayout = () => {
   const isAuthenticated = useUIStore(state => state.operator?.isAuthenticated);
-
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-
   return (
     <>
       <Sidebar />
@@ -34,16 +32,16 @@ const MainLayout = () => {
 
 export default function App() {
   const theme = useUIStore(state => state.theme);
-
+  
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-return (
+  return (
     <Routes>
       {/* --- ОТКРЫТАЯ ЗОНА --- */}
       <Route path="/login" element={<Login />} />
-
+      
       {/* --- ЗАЩИЩЕННАЯ БАЗА --- */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<Workspace />} />
@@ -59,7 +57,6 @@ return (
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="courses" element={<AdminCourses />} />
         <Route path="courses/:id" element={<AdminCourseDetails />} />
-        <Route path="users" element={<AdminPlaceholder title="Операторы" />} />
       </Route>
     </Routes>
   );
