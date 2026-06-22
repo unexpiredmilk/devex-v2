@@ -11,7 +11,7 @@ const achievementsMap = {
   'semantic': { title: 'Архитектор сеток', desc: 'Соблюдена семантика', icon: <GridFour size={24} weight="duotone" color="var(--accent-energy)" />, date: '18.10.2025' },
   'ghost': { title: 'Призрак в системе', desc: 'Скрытый код обнаружен', icon: <Ghost size={24} weight="duotone" color="var(--accent-energy)" />, date: '19.10.2025' },
   'style': { title: 'Стильный код', desc: 'Применение CSS', icon: <Palette size={24} weight="duotone" color="var(--accent-energy)" />, date: '20.10.2025' },
-  'start': { title: 'Инициализация', desc: 'Первая глава завершена', icon: <Code size={24} weight="duotone" color="var(--accent-energy)" />, date: '21.10.2025' },
+  { 'start': { title: 'Инициализация', desc: 'Первая глава завершена', icon: <Code size={24} weight="duotone" color="var(--accent-energy)" />, date: '21.10.2025' },
   'emmet_pro': { title: 'Эммет-мастер', desc: 'Использовано 15 раз', icon: <Cpu size={24} weight="duotone" color="var(--accent-energy)" />, date: '22.10.2025' },
   'night': { title: 'Ночная смена', desc: 'С 00:00 до 05:00', icon: <Moon size={24} weight="duotone" color="var(--accent-energy)" />, date: '23.10.2025' },
   'hunter': { title: 'Охотник за багами', desc: 'Ошибки исправлены', icon: <Bug size={24} weight="duotone" color="var(--accent-energy)" />, date: '24.10.2025' },
@@ -24,8 +24,8 @@ export default function Profile() {
   const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
   const itemVariants = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } };
 
-  // Защита: если массива нет, считаем что он пустой
-  const safeAchievements = operator?.achievements || [];
+  // ИСПРАВЛЕНИЕ: Направили луч захвата в реальную ячейку operator.unlockedAchievements
+  const safeAchievements = operator?.unlockedAchievements || [];
   const maxAchievements = 12; 
   const progressPercentage = (safeAchievements.length / maxAchievements) * 100;
 
@@ -68,7 +68,6 @@ export default function Profile() {
 
       <motion.div variants={itemVariants} className="dashboard-card card-stats" style={{ gridColumn: 'span 3' }}>
         <div className="header-tech" style={{ marginBottom: '12px', border: 'none' }}>СИСТЕМНЫЕ ЛОГИ</div>
-        {/* ВОТ ЗДЕСЬ БЫЛ КРАШ. ТЕПЕРЬ ОН ЗАЩИЩЕН: */}
         <div className="stat-row"><span className="stat-label">Решено</span><span className="stat-value">{operator?.stats?.solvedModules || 0}</span></div>
         <div className="stat-row"><span className="stat-label">Компиляций</span><span className="stat-value">{operator?.stats?.cleanCompilations || 0}</span></div>
         <div className="stat-row"><span className="stat-label">Дней</span><span className="stat-value">{operator?.stats?.daysInSystem || 1}</span></div>
@@ -102,10 +101,10 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      {/* СТРОКА 3: Оборудование */}
+      {/* СТРОКА 3: Оборудование (добавлен flexWrap: 'wrap' для мобилок) */}
       <motion.div variants={itemVariants} className="dashboard-card" style={{ gridColumn: 'span 12' }}>
         <div className="header-tech" style={{ marginBottom: '16px', border: 'none' }}>УСТАНОВЛЕННОЕ ОБОРУДОВАНИЕ</div>
-        <div style={{ display: 'flex', gap: '16px' }}>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           {operator?.unlockedImplants && operator.unlockedImplants.length > 0 ? operator.unlockedImplants.map(id => (
             <div key={id} className="mini-card" style={{ border: '1px solid var(--accent-energy)', width: '220px' }}>
                <div className="mini-icon">
