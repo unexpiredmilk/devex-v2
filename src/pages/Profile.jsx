@@ -3,19 +3,20 @@ import { Coins, Code, Lightning, ShieldCheck, Timer, Target, GridFour, Ghost, Pa
 import { useUIStore } from '../store/uiStore';
 import avatarImg from '../assets/img/meswag.png';
 
+// ОЧИСТКА: Статические даты полностью удалены из конфигурации нод
 const achievementsMap = {
-  'clean': { title: 'Чистая компиляция', desc: 'Без единой ошибки синтаксиса', icon: <ShieldCheck size={24} weight="duotone" color="var(--accent-energy)" />, date: '12.10.2025' },
-  'speed': { title: 'Скоростной оператор', desc: 'Меньше 60 секунд', icon: <Timer size={24} weight="duotone" color="var(--accent-energy)" />, date: '14.10.2025' },
-  'eco': { title: 'Энергосбережение', desc: 'Без затрат АКБ', icon: <Lightning size={24} weight="duotone" color="var(--accent-energy)" />, date: '15.10.2025' },
-  'tags': { title: 'Синтаксический хищник', desc: '10 уникальных тегов', icon: <Target size={24} weight="duotone" color="var(--accent-energy)" />, date: '16.10.2025' },
-  'semantic': { title: 'Архитектор сеток', desc: 'Соблюдена семантика', icon: <GridFour size={24} weight="duotone" color="var(--accent-energy)" />, date: '18.10.2025' },
-  'ghost': { title: 'Призрак в системе', desc: 'Скрытый код обнаружен', icon: <Ghost size={24} weight="duotone" color="var(--accent-energy)" />, date: '19.10.2025' },
-  'style': { title: 'Стильный код', desc: 'Применение CSS', icon: <Palette size={24} weight="duotone" color="var(--accent-energy)" />, date: '20.10.2025' },
-  'start': { title: 'Инициализация', desc: 'Первая глава завершена', icon: <Code size={24} weight="duotone" color="var(--accent-energy)" />, date: '21.10.2025' },
-  'emmet_pro': { title: 'Эммет-мастер', desc: 'Использовано 15 раз', icon: <Cpu size={24} weight="duotone" color="var(--accent-energy)" />, date: '22.10.2025' },
-  'night': { title: 'Ночная смена', desc: 'С 00:00 до 05:00', icon: <Moon size={24} weight="duotone" color="var(--accent-energy)" />, date: '23.10.2025' },
-  'hunter': { title: 'Охотник за багами', desc: 'Ошибки исправлены', icon: <Bug size={24} weight="duotone" color="var(--accent-energy)" />, date: '24.10.2025' },
-  'full': { title: 'Полная интеграция', desc: 'Установлены все модули', icon: <Trophy size={24} weight="duotone" color="var(--accent-energy)" />, date: '25.10.2025' },
+  'clean': { title: 'Чистая компиляция', desc: 'Без единой ошибки синтаксиса', icon: <ShieldCheck size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'speed': { title: 'Скоростной оператор', desc: 'Меньше 60 секунд', icon: <Timer size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'eco': { title: 'Энергосбережение', desc: 'Без затрат АКБ', icon: <Lightning size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'tags': { title: 'Синтаксический хищник', desc: '10 уникальных тегов', icon: <Target size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'semantic': { title: 'Архитектор сеток', desc: 'Соблюдена семантика', icon: <GridFour size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'ghost': { title: 'Призрак в системе', desc: 'Скрытый код обнаружен', icon: <Ghost size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'style': { title: 'Стильный код', desc: 'Применение CSS', icon: <Palette size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'start': { title: 'Инициализация', desc: 'Первая глава завершена', icon: <Code size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'emmet_pro': { title: 'Эммет-мастер', desc: 'Использовано 15 раз', icon: <Cpu size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'night': { title: 'Ночная смена', desc: 'С 00:00 до 05:00', icon: <Moon size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'hunter': { title: 'Охотник за багами', desc: 'Ошибки исправлены', icon: <Bug size={24} weight="duotone" color="var(--accent-energy)" /> },
+  'full': { title: 'Полная интеграция', desc: 'Установлены все модули', icon: <Trophy size={24} weight="duotone" color="var(--accent-energy)" /> },
 };
 
 export default function Profile() {
@@ -39,6 +40,9 @@ export default function Profile() {
     }
     return <div style={{ display: 'flex', gap: '2px', marginTop: '12px', flexWrap: 'wrap' }}>{blocks}</div>;
   };
+
+  // ТУМБЛЕР ЖИВОГО ВРЕМЕНИ: Вычисляем текущую дату системы в формате ДД.ММ.ГГГГ
+  const currentSystemDate = new Date().toLocaleDateString('ru-RU');
 
   return (
     <motion.main className="panel profile-dashboard" variants={containerVariants} initial="hidden" animate="show">
@@ -90,7 +94,8 @@ export default function Profile() {
                   <div className="mini-icon">{ach.icon}</div>
                   <div className="mini-info">
                     <span className="mini-title">{ach.title}</span>
-                    <span className="mini-date">{ach.date}</span>
+                    {/* СИНХРОНИЗАЦИЯ: Выводим живое время вместо статики */}
+                    <span className="mini-date">{currentSystemDate}</span>
                   </div>
                 </div>
               </div>
