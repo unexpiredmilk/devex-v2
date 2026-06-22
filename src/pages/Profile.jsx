@@ -52,7 +52,7 @@ export default function Profile() {
         <img src={avatarImg} alt="Avatar" className="profile-avatar" />
         <div className="identity-info" style={{ flex: 1 }}>
           <h1>{operator?.name || 'OPERATOR'}</h1>
-          <h2>{operator?.handle || '@unknown'}</h2>
+          <h2>{operator?.handle || '@devex_student'}</h2>
           <div style={{ marginTop: '16px', borderTop: '1px dashed var(--border-color)', paddingTop: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-tech)', fontSize: '12px' }}>
               <span style={{ color: 'var(--text-muted)' }}>УРОВЕНЬ {operator?.level || 1}</span>
