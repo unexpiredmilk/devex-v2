@@ -26,7 +26,12 @@ const defaultCourses = [
             type: 'practice', 
             theory: 'Ручной ввод тегов <html>, <head> и <body> отнимает время. Для оптимизации рутины в систему интегрирован кибер-модуль Emmet.\n\nПоставьте курсор в пустую рабочую область, введите восклицательный знак и нажмите клавишу Tab ("!" + Tab), чтобы мгновенно развернуть семантический каркас.', 
             task: '1. Разверните базовый HTML-документ с помощью импланта Emmet ("!" + Tab).\n2. Внутри тега <body> создайте заголовок <h1> с текстом "DEVEX Terminal".\n3. Ниже добавьте абзац <p> с текстом "Ожидание ввода данных...".', 
-            initialHtml: ''
+            initialHtml: '',
+            targetPatterns: [
+              { pattern: "<!doctype html>", weight: 25 },
+              { pattern: "<h1.*?>devex terminal</h1>", weight: 40 },
+              { pattern: "<p.*?>ожидание ввода данных.*?</p>", weight: 35 }
+            ]
           }
         ]
       },
@@ -46,7 +51,13 @@ const defaultCourses = [
             type: 'practice', 
             theory: 'Атрибут placeholder подсказывает пользователю, что именно нужно ввести.', 
             task: 'Создайте тег form. Внутри него добавьте поле input с типом "text" и плейсхолдером "Введите позывной". Ниже добавьте кнопку button с текстом "Войти".', 
-            initialHtml: '<body>\n  <h2>Шлюз доступа</h2>\n  \n  \n</body>' 
+            initialHtml: '<body>\n  <h2>Шлюз доступа</h2>\n  \n  \n</body>',
+            targetPatterns: [
+              { pattern: "<form.*?>", weight: 30 },
+              { pattern: "<input.*?type=['\"]text['\"].*?>", weight: 30 },
+              { pattern: "placeholder=['\"]введите позывной['\"]", weight: 20 },
+              { pattern: "<button.*?>войти</button>", weight: 20 }
+            ]
           }
         ]
       }
@@ -77,7 +88,12 @@ const defaultCourses = [
             theory: 'HTML-структура уже готова. Переключитесь на вкладку style.css.', 
             task: 'Обратитесь к классу .cyber-btn. Задайте ему цвет текста (color) #00ff00 и цвет фона (background-color) #111111.', 
             initialHtml: '<body>\n  <div class="interface">\n    <button class="cyber-btn">ВЗЛОМ СИСТЕМЫ</button>\n  </div>\n</body>',
-            initialCss: '/* Ваш CSS код ниже */\n\n' 
+            initialCss: '/* Ваш CSS код ниже */\n\n',
+            targetPatterns: [
+              { pattern: "\\.cyber-btn", weight: 20 },
+              { pattern: "color\\s*:\\s*(#00ff00|rgb\\(0,\\s*255,\\s*0\\))", weight: 40 },
+              { pattern: "background-color\\s*:\\s*(#111111|rgb\\(17,\\s*17,\\s*17\\))", weight: 40 }
+            ]
           }
         ]
       },
@@ -98,7 +114,11 @@ const defaultCourses = [
             theory: 'У нас есть панель с тремя модулями. Сейчас они слиплись в левом углу.', 
             task: 'Для класса .dashboard-panel задайте display: flex; и раздвиньте элементы по краям с помощью justify-content: space-between;.', 
             initialHtml: '<div class="dashboard-panel">\n  <div class="module">АКБ</div>\n  <div class="module">СЕТЬ</div>\n  <div class="module">ЛОГИ</div>\n</div>',
-            initialCss: '.module {\n  background: #333;\n  padding: 10px;\n  color: white;\n}\n\n.dashboard-panel {\n  background: #111;\n  padding: 20px;\n  /* Добавьте Flexbox-свойства ниже */\n  \n}' 
+            initialCss: '.module {\n  background: #333;\n  padding: 10px;\n  color: white;\n}\n\n.dashboard-panel {\n  background: #111;\n  padding: 20px;\n  /* Добавьте Flexbox-свойства ниже */\n  \n}',
+            targetPatterns: [
+              { pattern: "display\\s*:\\s*flex", weight: 50 },
+              { pattern: "justify-content\\s*:\\s*space-between", weight: 50 }
+            ]
           }
         ]
       }
@@ -126,11 +146,15 @@ const defaultCourses = [
             _id: 'l-j-2', 
             title: 'Практика: Подмена данных', 
             type: 'practice', 
-            theory: 'HTML и CSS уже настроены. Перейдите во вкладку script.js.', 
+            theory: 'HTML и CSS уже настроены. Переключитесь на вкладку script.js.', 
             task: 'Найдите элемент с классом .status-text с помощью querySelector. Сохраните его в константу, а затем измените его textContent на "ОНЛАЙН".', 
             initialHtml: '<div class="server-card">\n  <h3>Сервер Альфа</h3>\n  <div class="status-text">ОФФЛАЙН</div>\n</div>',
             initialCss: '.server-card { background: #1a1a1a; padding: 20px; color: white; border: 1px solid #333; width: 200px; }\n.status-text { color: red; font-family: monospace; }',
-            initialJs: '// 1. Найдите элемент:\n\n// 2. Измените его текст:\n' 
+            initialJs: '// 1. Найдите элемент:\n\n// 2. Измените его текст:\n',
+            targetPatterns: [
+              { pattern: "const\\s+\\w+\\s*=\\s*document\\.querySelector\\s*\\(\\s*['\"]\\.status-text['\"]\\s*\\)", weight: 50 },
+              { pattern: "\\.textContent\\s*=\\s*['\"]ОНЛАЙН['\"]", weight: 50 }
+            ]
           }
         ]
       },
@@ -152,7 +176,11 @@ const defaultCourses = [
             task: 'Найдите кнопку .hack-btn и контейнер .system-core. Добавьте кнопке слушатель события "click". При клике меняйте текст контейнера (textContent) на "ВЗЛОМАНО".', 
             initialHtml: '<div class="system-core">Система стабильна</div>\n<button class="hack-btn">Атаковать</button>',
             initialCss: '.system-core { padding: 20px; border: 2px solid #333; color: #888; margin-bottom: 15px; }\n.hack-btn { background: orange; border: none; padding: 10px 20px; cursor: pointer; }',
-            initialJs: 'const btn = document.querySelector(".hack-btn");\nconst core = document.querySelector(".system-core");\n\n// Добавьте слушатель событий ниже:\n' 
+            initialJs: 'const btn = document.querySelector(".hack-btn");\nconst core = document.querySelector(".system-core");\n\n// Добавьте слушатель событий ниже:\n',
+            targetPatterns: [
+              { pattern: "btn\\.addEventListener\\s*\\(\\s*['\"]click['\"]", weight: 50 },
+              { pattern: "core\\.textContent\\s*=\\s*['\"]ВЗЛОМАНО['\"]", weight: 50 }
+            ]
           }
         ]
       }
